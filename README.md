@@ -1,13 +1,13 @@
 # swfree-crud
 
-Swfree-crud is a web API built to store information of SW planets. It was developed in Java 8 using Spring Boot and a embedded MongoDB.
+Swfree-crud is a web API built to store information of SW planets. It was developed in Java 8 using Spring Boot and an embedded MongoDB.
 
 # Running
 ```sh
 $ ./run.sh
 ```
 
-A server will be created at the port 8080.
+A server will be created at port 8080.
 
 ## API Documentation
 
@@ -28,7 +28,7 @@ A server will be created at the port 8080.
 
 #### Create a New Planet [POST]
 
-You may create your own planet and if is a real SW planet, will ask another api (swapi.co) how many movies that planet had occurrences and store it too.
+You may create your own planet and if is a real SW planet, will ask another api (https://swapi.co/api/) how many movies that planet had occurrences and store it too.
 
 + Request (application/json)
 
