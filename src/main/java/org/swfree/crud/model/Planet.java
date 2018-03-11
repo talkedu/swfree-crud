@@ -11,7 +11,6 @@ public class Planet {
     private String terrain;
     private Integer occurrences;
 
-
     public String getId() {
         return id;
     }
@@ -51,4 +50,5 @@ public class Planet {
     public void setOccurrences(Integer occurrences) {
         this.occurrences = occurrences;
     }
+
 }
