@@ -3,9 +3,11 @@
 Swfree-crud is a web API built to store information of SW planets. It was developed in Java 8 using Spring Boot and an embedded MongoDB.
 
 # Running
+
 ```sh
 $ ./run.sh
 ```
+OBS: Needs docker installed.
 
 A server will be created at port 8080.
 
