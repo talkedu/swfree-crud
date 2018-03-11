@@ -55,6 +55,11 @@ You may create your own planet and if is a real SW planet, will ask another api 
                 "terrain": "water",
                 "occurrences": 4
             }
+
+#### Delete All Planets [DELETE]
+
++ Response 204
+
         
 ### Planets Search [/api/planets{?name}]
 
