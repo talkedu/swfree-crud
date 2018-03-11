@@ -2,9 +2,16 @@
 
 Swfree-crud is a web API built to store information of SW planets. It was developed in Java 8 using Spring Boot and a embedded MongoDB.
 
-## Planets Collection [/api/planets]
+# Running
+```sh
+$ ./run.sh
+```
 
-### List All Planets [GET]
+## API Documentation
+
+### Planets Collection [/api/planets]
+
+#### List All Planets [GET]
 
 + Response 200 (application/json)
 
@@ -17,7 +24,7 @@ Swfree-crud is a web API built to store information of SW planets. It was develo
             }
         ]
 
-### Create a New Planet [POST]
+#### Create a New Planet [POST]
 
 You may create your own planet and if is a real SW planet, will ask another api (swapi.co) how many movies that planet had occurrences and store it too.
 
@@ -47,13 +54,13 @@ You may create your own planet and if is a real SW planet, will ask another api 
                 "occurrences": 4
             }
         
-## Planets Search [/api/planets{?name}]
+### Planets Search [/api/planets{?name}]
 
 + Parameters
     + name (string) - Name of the planet in the form of an string
 
     
-### Search Planets By name [GET]
+#### Search Planets By name [GET]
 
 You may search for Planets by a specific name
     
@@ -96,7 +103,3 @@ You may find a planet giving it's id
         }
 
 + Response 400
-
-
-
-
