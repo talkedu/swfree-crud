@@ -3,14 +3,12 @@ package org.swfree.crud.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.swfree.crud.exception.PlanetNotFoundException;
 import org.swfree.crud.model.Planet;
 import org.swfree.crud.repository.PlanetRepository;
 import org.swfree.crud.service.PlanetService;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -24,22 +22,24 @@ public class PlanetController {
     PlanetService planetService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Iterable<Planet> findAll() {
         return planetRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public Planet findById(@PathVariable String id) throws Exception {
+    public ResponseEntity<Planet> findById(@PathVariable("id") String id) {
         Optional<Planet> optional = planetRepository.findById(id);
-        if(optional.isPresent()) {
-            return optional.get();
+        if (optional.isPresent()) {
+            return ResponseEntity.ok(optional.get());
         } else {
-            throw new PlanetNotFoundException();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping(params = {"name"})
-    public Iterable<Planet> findByName(String name) throws Exception {
+    @ResponseStatus(HttpStatus.OK)
+    public Iterable<Planet> findByName(@RequestParam("name") String name) {
         return planetRepository.findByName(name);
     }
 
@@ -48,24 +48,24 @@ public class PlanetController {
         planet.setOccurrences(planetService.getPlanetOccurrencesInMoviesByName(planet.getName()));
         planet = planetRepository.save(planet);
 
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.set("Location", String.format("/api/planets/%s", planet.getId()));
-
-        return new ResponseEntity<>(planet, headers, HttpStatus.CREATED);
+        return ResponseEntity
+                .created(URI.create(String.format("/api/planets/%s", planet.getId())))
+                .body(planet);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable String id) {
+    public ResponseEntity delete(@PathVariable("id") String id) {
         Optional<Planet> optional = planetRepository.findById(id);
-        if(optional.isPresent()) {
+        if (optional.isPresent()) {
             planetRepository.delete(optional.get());
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAll() {
         planetRepository.deleteAll();
     }
