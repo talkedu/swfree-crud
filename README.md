@@ -7,6 +7,8 @@ Swfree-crud is a web API built to store information of SW planets. It was develo
 $ ./run.sh
 ```
 
+A server will be created at the port 8080.
+
 ## API Documentation
 
 ### Planets Collection [/api/planets]
