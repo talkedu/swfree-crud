@@ -27,6 +27,9 @@ public class PlanetServiceTests {
 		long dagobahOccurrences = planetService.getPlanetOccurrencesInMoviesByName("Dagobah");
 		assertEquals(3l, dagobahOccurrences);
 
+		long earthOccurrences = planetService.getPlanetOccurrencesInMoviesByName("Earth");
+		assertEquals(0l, earthOccurrences);
+
 	}
 
 }
