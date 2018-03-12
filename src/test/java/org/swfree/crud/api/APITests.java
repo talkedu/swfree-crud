@@ -52,8 +52,6 @@ public class APITests {
 
         List<Planet> planets = singletonList(planet);
 
-        given(planetService.getPlanetOccurrencesInMoviesByName(anyString())).willReturn(2);
-
         given(planetRepository.findAll()).willReturn(planets);
 
         mvc.perform(get("/api/planets").contentType(APPLICATION_JSON))
@@ -80,6 +78,8 @@ public class APITests {
         result.setId("1");
         result.setOccurrences(2);
 
+        given(planetService.getPlanetOccurrencesInMoviesByName(anyString())).willReturn(2);
+
         given(planetRepository.save(any())).willReturn(result);
 
         mvc.perform(post("/api/planets").content(asJsonString(planet)).contentType(APPLICATION_JSON))
@@ -90,7 +90,6 @@ public class APITests {
                 .andExpect(jsonPath("$.terrain", is(result.getTerrain())))
                 .andExpect(jsonPath("$.occurrences", is(result.getOccurrences())))
                 .andExpect(jsonPath("$.name", is(result.getName())));
-
     }
 
     @Test
