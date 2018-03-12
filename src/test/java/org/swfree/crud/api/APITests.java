@@ -156,14 +156,14 @@ public class APITests {
 
         given(planetRepository.findById(anyString())).willReturn(Optional.of(planet));
 
-        mvc.perform(delete("/api/planets/1"))
+        mvc.perform(delete(String.format("/api/planets/%s", planet.getId())))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
 
         given(planetRepository.findById(anyString())).willReturn(Optional.empty());
 
-        mvc.perform(delete("/api/planets/1"))
+        mvc.perform(delete(String.format("/api/planets/%s", planet.getId())))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
