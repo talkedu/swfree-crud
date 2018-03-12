@@ -45,6 +45,7 @@ public class APITests {
     @Test
     public void testFindAll() throws Exception{
         Planet planet = new Planet();
+        planet.setId("1");
         planet.setName("Alderaan");
         planet.setClimate("cold");
         planet.setTerrain("water");
@@ -58,10 +59,11 @@ public class APITests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(planet.getId())))
+                .andExpect(jsonPath("$[0].name", is(planet.getName())))
                 .andExpect(jsonPath("$[0].climate", is(planet.getClimate())))
                 .andExpect(jsonPath("$[0].terrain", is(planet.getTerrain())))
-                .andExpect(jsonPath("$[0].occurrences", is(planet.getOccurrences())))
-                .andExpect(jsonPath("$[0].name", is(planet.getName())));
+                .andExpect(jsonPath("$[0].occurrences", is(planet.getOccurrences())));
     }
 
 
