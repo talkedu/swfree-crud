@@ -7,14 +7,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.swfree.crud.controller.PlanetController;
 import org.swfree.crud.model.Planet;
+import org.swfree.crud.repository.PlanetRepository;
+import org.swfree.crud.service.PlanetService;
 
-import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -23,9 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,7 +37,10 @@ public class APITests {
     private MockMvc mvc;
 
     @MockBean
-    private PlanetController planetController;
+    private PlanetRepository planetRepository;
+
+    @MockBean
+    private PlanetService planetService;
 
     @Test
     public void testFindAll() throws Exception{
@@ -50,7 +52,9 @@ public class APITests {
 
         List<Planet> planets = singletonList(planet);
 
-        given(planetController.findAll()).willReturn(planets);
+        given(planetService.getPlanetOccurrencesInMoviesByName(anyString())).willReturn(2);
+
+        given(planetRepository.findAll()).willReturn(planets);
 
         mvc.perform(get("/api/planets").contentType(APPLICATION_JSON))
                 .andDo(print())
@@ -76,9 +80,7 @@ public class APITests {
         result.setId("1");
         result.setOccurrences(2);
 
-        given(planetController.create(any())).willReturn(ResponseEntity
-                .created(URI.create(String.format("/api/planets/%s", result.getId())))
-                .body(result));
+        given(planetRepository.save(any())).willReturn(result);
 
         mvc.perform(post("/api/planets").content(asJsonString(planet)).contentType(APPLICATION_JSON))
                 .andDo(print())
@@ -101,7 +103,7 @@ public class APITests {
 
         List<Planet> planets = singletonList(planet);
 
-        given(planetController.findByName(anyString())).willReturn(planets);
+        given(planetRepository.findByName(anyString())).willReturn(planets);
 
         mvc.perform(get("/api/planets").param("name", planet.getName()).contentType(APPLICATION_JSON)
         .accept(APPLICATION_JSON))
@@ -123,7 +125,7 @@ public class APITests {
         planet.setTerrain("water");
         planet.setOccurrences(2);
 
-        given(planetController.findById(any())).willReturn(ResponseEntity.ok(planet));
+        given(planetRepository.findById(any())).willReturn(Optional.of(planet));
 
         mvc.perform(get(String.format("/api/planets/%s", planet.getId())).contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON))
@@ -135,7 +137,7 @@ public class APITests {
                 .andExpect(jsonPath("$.occurrences", is(planet.getOccurrences())))
                 .andExpect(jsonPath("$.name", is(planet.getName())));
 
-        given(planetController.findById(any())).willReturn(ResponseEntity.notFound().build());
+        given(planetRepository.findById(any())).willReturn(Optional.empty());
 
         mvc.perform(get(String.format("/api/planets/%s", planet.getId())).contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON))
@@ -146,14 +148,21 @@ public class APITests {
     @Test
     public void testDeleteById() throws Exception {
 
-        given(planetController.delete(anyString())).willReturn(ResponseEntity.noContent().build());
+        Planet planet = new Planet();
+        planet.setId("1");
+        planet.setName("Alderaan");
+        planet.setClimate("cold");
+        planet.setTerrain("water");
+        planet.setOccurrences(2);
+
+        given(planetRepository.findById(anyString())).willReturn(Optional.of(planet));
 
         mvc.perform(delete("/api/planets/1"))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
 
-        given(planetController.delete(anyString())).willReturn(ResponseEntity.notFound().build());
+        given(planetRepository.findById(anyString())).willReturn(Optional.empty());
 
         mvc.perform(delete("/api/planets/1"))
                 .andDo(print())
